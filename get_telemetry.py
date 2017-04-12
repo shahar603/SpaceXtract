@@ -268,7 +268,7 @@ def main():
         description="Create graphs for SpaceX's launch videos.")
     parser.add_argument('-c', '--capture', action='store', dest='capture_path')
     parser.add_argument('-d', '--destination', action='store', dest='destination_path', default='telemetry.json')
-    parser.add_argument('-t', '--templates', action='store', dest='templates_path', default='SpaceX')
+    parser.add_argument('-t', '--templates', action='store', dest='templates_path', default='Images')
     parser.add_argument('-T', '--time', action='store', dest='launch_time', default=0)
 
     args = parser.parse_args()
