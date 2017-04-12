@@ -7,6 +7,7 @@ import simplejson as json
 import livestreamer
 from collections import OrderedDict
 import datetime
+from sys import argv
 
 KMH_CONVERSION = 3.6 # m/s
 threshold = 0.85 # Minimum probability for the OCR algorithm. 0.85 for 1080p, not live capture.
@@ -195,19 +196,15 @@ def extract_frames(frame, frame_height, frame_width):
                   crop_frame(frame_thresh, frame_height, frame_width, spaceX[4:])))
 
 
+# Organize the data according to the protocol.
 def output_data(uid, time, velocity, altitude):
     dict_data = OrderedDict([
         ('time', round_to_n_digits(time, 2)),
         ('velocity', round_to_n_digits(velocity, 2)),
         ('altitude', round_to_n_digits(altitude, 2))])
 
-    return json.dumps(
-        {
-            'uid': uid,
-            'timestamp': datetime.datetime.utcnow().isoformat()+'Z',
-            'data': dict_data
-        }
-    )
+    return json.dumps(OrderedDict([('uid', uid), ('timestamp', datetime.datetime.utcnow().isoformat()+'Z'), ('data', dict_data)]))
+
 
 
 def analyze_capture(cap, file, templates, launch_time):
@@ -286,24 +283,26 @@ def analyze_capture(cap, file, templates, launch_time):
             ('velocity', round_to_n_digits(cur_velocity, 2)),
             ('altitude', round_to_n_digits(cur_altitude, 2))])
 
-        # Write data to output file.
-        file.write(json.dumps(dict_data)+'\n')
-        file.flush()
-        # json.dump(dict_data, file)
+
+        if file is not None:
+            # Write data to output file.
+            file.write(json.dumps(dict_data)+'\n')
+            file.flush()
+            # json.dump(dict_data, file)
 
         # Send data to stdout.
-        print(json.dumps(OrderedDict([('uid', frame_index), ('timestamp', datetime.datetime.utcnow().isoformat()+'Z'), ('data', dict_data)])))
-        #print(output_data(frame_index, cur_time, current_velocity, current_altitude))
+        print(output_data(frame_index, cur_time, cur_velocity, cur_altitude))
 
         # Update time, velocity and altitude values.
         prev_altitude = cur_altitude
         prev_velocity = cur_velocity
         prev_time = cur_time
 
-    # Write the last data left to the disk.
-    file.write(json.dumps(dict_data)+'\n')
-    file.flush()
-    # json.dump(dict_data, file)
+    if file is not None:
+        # Write the last data left to the disk.
+        file.write(json.dumps(dict_data)+'\n')
+        file.flush()
+        # json.dump(dict_data, file)
 
 
 
@@ -319,8 +318,16 @@ def main():
                         help='Path to the folder that cotains the template images')
     parser.add_argument('-T', '--time', action='store', dest='launch_time', default=0,
                         help='Time delay from the beginning of the video to the time of the launch (in seconds)')
+    parser.add_argument('-r', action='store', dest='irl', default='true',
+                        help='If true (Or not given) the program will NOT write to a file and '
+                             'only output json data')
 
     args = parser.parse_args()
+
+    # If no arguments are given show help and exit.
+    if len(argv) == 1:
+        parser.print_help()
+        exit(-1)
 
     # Use Livestreamer if the input is a url.
     if args.capture_path.startswith('www.youtube.com') or args.capture_path.startswith('http'):
@@ -330,12 +337,14 @@ def main():
         capture = args.capture_path
 
     # Notify the user if he/she tries to override a file.
-    if isfile(args.destination_path):
+    if args.irl.lower() == 'false' and isfile(args.destination_path):
         if input('{} already exists. Are you sure you want to overwrite it? [y/n]: '.format(args.destination_path)) != 'y':
             exit(1)
 
-    # Open output files.
-    file = open(args.destination_path, 'wt')
+        # Open output files.
+        file = open(args.destination_path, 'wt')
+    else:
+        file = None
 
     # Load digits' templates from the disk.
     templates = [cv2.imread('{}/{}.jpg'.format(args.templates_path, i), 0) for i in range(10)]
