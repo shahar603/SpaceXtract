@@ -266,17 +266,21 @@ def main():
     # Parse command line arguments.
     parser = argparse.ArgumentParser(
         description="Create graphs for SpaceX's launch videos.")
-    parser.add_argument('-c', '--capture', action='store', dest='capture_path')
-    parser.add_argument('-d', '--destination', action='store', dest='destination_path', default='telemetry.json')
-    parser.add_argument('-t', '--templates', action='store', dest='templates_path', default='Images')
-    parser.add_argument('-T', '--time', action='store', dest='launch_time', default=0)
+    parser.add_argument('-c', '--capture', action='store', dest='capture_path',
+                        help='Path (url or local) of the desired video')
+    parser.add_argument('-d', '--destination', action='store', dest='destination_path', default='telemetry.json',
+                        help='Path to the file that will contain the output')
+    parser.add_argument('-t', '--templates', action='store', dest='templates_path', default='Images',
+                        help='Path to the folder that cotains the template images')
+    parser.add_argument('-T', '--time', action='store', dest='launch_time', default=0,
+                        help='Time delay from the beginning of the video to the time of the launch (in seconds)')
 
     args = parser.parse_args()
 
     if args.capture_path.startswith('www.youtube.com') or \
             args.capture_path.startswith('http'):
         streams = livestreamer.streams(args.capture_path)
-        capture = streams['720p'].url
+        capture = streams['1080'].url
     else:
         capture = args.capture_path
 
