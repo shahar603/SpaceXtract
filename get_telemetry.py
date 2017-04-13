@@ -274,7 +274,7 @@ def analyze_capture(cap, file, templates, launch_time):
                                                                             cur_altitude, prev_altitude):
             continue
 
-        # If this frame is that contains valid telemetry, start counting the time.
+        # If this frame is the first to contain valid telemetry, start counting the time.
         if not start_measurement:
             start_measurement = True
 
@@ -337,8 +337,8 @@ def main():
         capture = args.capture_path
 
     # Notify the user if he/she tries to override a file.
-    if args.irl.lower() == 'false' and isfile(args.destination_path):
-        if input('{} already exists. Are you sure you want to overwrite it? [y/n]: '.format(args.destination_path)) != 'y':
+    if args.irl.lower() == 'false':
+        if isfile(args.destination_path) and input('{} already exists. Are you sure you want to overwrite it? [y/n]: '.format(args.destination_path)) != 'y':
             exit(1)
 
         # Open output files.
