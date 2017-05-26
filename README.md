@@ -21,7 +21,7 @@ pip install streamlink
 You will need [FFMpeg](https://ffmpeg.org/) to be installed and be in ```PATH```
 
 Currently, the extract module cannot be installed with any tool (To my very limited knowledge).
-To get the module, download it (and the Templates directory) from this repo. In the future I plan to make it pip installable.
+To get the module, download [extract.py](https://github.com/shahar603/SpaceX/blob/master/extract.py) and the [Templates](https://github.com/shahar603/SpaceX/tree/master/Templates) directory from this repo. In the future I plan to make it pip installable.
 
 
 
