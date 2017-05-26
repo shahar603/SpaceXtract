@@ -5,7 +5,7 @@ Run this program using Python 3 (I tested it on Python 3.5.1 32bit version). You
 
 extrct.py
 =========
-extract.py is a Python module that allows anyone with a very little knowlage in programming to be able to analyse data from SpaceX webcast, Live, after launch or Offline.
+extract.py is a Python module that allows anyone with a little knowledge in programming to be able to analyse data from SpaceX webcast, Live, after launch or Offline.
 
 Installing the required modules
 ===============================
@@ -20,7 +20,7 @@ pip install streamlink
 
 You will need [FFMpeg](https://ffmpeg.org/) to be installed and be in ```PATH```
 
-Currently, the extract module cannot be installed with any tool (To my very limited knowlage).
+Currently, the extract module cannot be installed with any tool (To my very limited knowledge).
 To get the module, download it (and the Templates directory) from this repo. In the future I plan to make it pip installable.
 
 
