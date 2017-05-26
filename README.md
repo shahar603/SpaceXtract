@@ -1,5 +1,5 @@
 # SpaceX
-Extraction and analysis of telemetry from SpaceX webcasts
+Extraction and analysis of telemetry from SpaceX webcasts.
 Run this program using Python 3 (I tested it on Python 3.5.1 32bit version). You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Livestreamer](http://docs.livestreamer.io/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
 
 
