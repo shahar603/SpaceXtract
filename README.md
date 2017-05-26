@@ -88,7 +88,7 @@ This is a script that outputs the time, velocity and altitude values of the Inma
 import extract
 import cv2
 
-cap = extract.get_capture('https://www.youtube.com/watch?v=vkz_lclGXNg', '1080p')
+cap = extract.get_capture('https://www.youtube.com/watch?v=ynMYE64IEKs', '1080p')
 
 if cap is None:
     exit(1)
