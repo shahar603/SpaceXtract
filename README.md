@@ -3,9 +3,9 @@ Extraction and analysis of telemetry from SpaceX webcasts.
 Run this program using Python 3 (I tested it on Python 3.5.1 32bit version). You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Livestreamer](http://docs.livestreamer.io/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
 
 
-extrct.py
+extract.py
 =========
-extract.py is a Python module that allows anyone with a little knowledge in programming to be able to analyse data from SpaceX webcast, Live, after launch or Offline.
+extract.py is a Python module that allows anyone with a little knowledge of OpenCV to be able to analyse data from SpaceX webcast, Live, after launch or Offline.
 
 Installing the required modules
 ===============================
