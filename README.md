@@ -66,6 +66,11 @@ skip_from_launch(cap, time)
   :param time: delta time from launch to skip to
   :return: index of requested frame
   
+extract_telemetry(frame)
+  Get time, velocity and alitutde values in frame
+  :param frame: Frame from the launch.
+  :return: tuple of time, velocity and alitutde (In this order)
+  
 #### WARNING For res='1080p' the function takes between 10 seconds to 5 minutes. In addition to that it might fail (Return a None)
 or raise an exception, if it does, try to run it again ####
 get_capture(youtube_url, res)
