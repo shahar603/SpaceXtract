@@ -105,7 +105,23 @@ while cap.isOpened():
 ```
 
 
-**I Highly recommend using 1080p, 720p is supported but is pretty dull. From my tests, 1080p is correct 98% of the time while 720p is less than 60%**
+- **I Highly recommend using 1080p, 720p is supported but is pretty dull. From my tests, 1080p is correct 98% of the time while 720p is less than 60%**
+
+- **The final Python package might not be compadible with older versions of this module**
+
+
+
+
+Plans for the future
+====================
+
+* Make the module a Python package
+* Better names and documentation (New names for functions, variables, tables and more). I'm open for suggestions.
+* Better support for 720p video
+* Moving some settings to a configuration files instread of being hard coded
+* (Maybe?) Support for other space streams (for example Blue Origin's)
+
+**Feedback is very welcome**
 
 
 get_telemetry.py (Old)
