@@ -10,7 +10,7 @@ extract.py is a Python module that allows anyone with a little knowledge of Open
 Installing the required modules
 ===============================
 
-All of these modules are can be installed using pip in the following manner:
+All the required modules can be installed using pip in the following manner:
 ```
 pip install numpy
 pip install opencv-python
@@ -21,7 +21,7 @@ pip install streamlink
 You will need [FFMpeg](https://ffmpeg.org/) to be installed and be in ```PATH```
 
 Currently, the extract module cannot be installed with any tool (To my very limited knowledge).
-To get the module, download [extract.py](https://github.com/shahar603/SpaceX/blob/master/extract.py) and the [Templates](https://github.com/shahar603/SpaceX/tree/master/Templates) directory from this repo. In the future I plan to make it pip installable.
+To get the module, download [extract.py](https://github.com/shahar603/SpaceX/blob/master/extract.py) and the [Templates](https://github.com/shahar603/SpaceX/tree/master/Templates) directory from this repository. In the future I plan to make it pip installable.
 
 
 
@@ -36,8 +36,8 @@ import extract.py
 
 Documentation
 ===============================
-The module contains quite a lot of functions, but only a few were made for the user.
-Here is details about the useful function for the user from help(extract).
+The module contains quite a lot of functions, but only a few are made for the user.
+Here are details about the useful functions for the user from help(extract).
 
 ```
 calc_altitude(frame)
