@@ -4,7 +4,7 @@ Run this program using Python 3 (I tested it on Python 3.5.1 32bit version). You
 
 
 Installing the required modules
-===============================
+-----------------------------
 
 All the required modules can be installed using pip in the following manner:
 ```
