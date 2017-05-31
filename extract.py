@@ -60,7 +60,7 @@ def remove_duplicates(lst):
     for i in lst:
         for j in lst:
             if i != j:
-                # Remove values too close together (less than 15 pixels apart).
+                # Remove values too close together (less than 10 pixels apart).
                 if fabs(i[1] - j[1]) < 10:
                     if j[2] < i[2]:
                         lst.remove(j)
