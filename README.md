@@ -1,11 +1,7 @@
 # SpaceX
 Extraction and analysis of telemetry from SpaceX webcasts.
-Run this program using Python 3 (I tested it on Python 3.5.1 32bit version). You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Livestreamer](http://docs.livestreamer.io/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
+Run this program using Python 3 (I tested it on Python 3.5.1 32bit version). You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
 
-
-extract.py
-=========
-extract.py is a Python module that allows anyone with a little knowledge of OpenCV to be able to analyse data from SpaceX webcast, Live, after launch or Offline.
 
 Installing the required modules
 ===============================
@@ -17,25 +13,28 @@ pip install opencv-python
 pip install livestreamer
 pip install streamlink
 ```
-
 You will need [FFMpeg](https://ffmpeg.org/) to be installed and be in ```PATH```
 
-Currently, the extract module cannot be installed with any tool (To my very limited knowledge).
-To get the module, download [extract.py](https://github.com/shahar603/SpaceX/blob/master/extract.py) and the [Templates](https://github.com/shahar603/SpaceX/tree/master/Templates) directory from this repository. In the future I plan to make it pip installable.
+
+extract.py
+=========
+extract.py is a Python module that allows anyone with a little knowledge of OpenCV to be able to analyse data from SpaceX webcast, Live, after launch or Offline.
 
 
 
 Importing the module
-===============================
+--------------------
 Put the extract.py and the Templates folder in the same directpory as your script.
 To import it to your script, add this line:
 ```
 import extract.py
 ```
 
+Currently, the extract module cannot be installed with any tool (To my very limited knowledge).
+To get the module, download [extract.py](https://github.com/shahar603/SpaceX/blob/master/extract.py) and the [Templates](https://github.com/shahar603/SpaceX/tree/master/Templates) directory from this repository. In the future I plan to make it pip installable.
 
 Documentation
-===============================
+--------------------
 The module contains quite a lot of functions, but only a few are made for the user.
 Here are details about the useful functions for the user from help(extract).
 
@@ -82,7 +81,7 @@ get_capture(youtube_url, res)
 
 
 Example of use
-==============
+--------------------
 This is a script that outputs the time, velocity and altitude values of the Inmarsat 5 F4 launch
 ```
 import extract
@@ -125,8 +124,7 @@ This script can be downloaded from [here](https://github.com/shahar603/SpaceX/bl
 
 
 Plans for the future
-====================
-
+--------------------
 * Make the module a Python package
 * Better names and documentation (New names for functions, variables, tables and more). I'm open for suggestions.
 * Better support for 720p video
@@ -136,11 +134,48 @@ Plans for the future
 **Feedback is very welcome**
 
 
-get_telemetry.py (Old)
-----------
-**-New version will be uploaded soon**
+get_telemetry.py
+=====================
+This script extract the telemetry data from SpaceX's webcast.
 
-Example of use:
+Command line arguments
+-------------------
+Output of ```python get_telemetry.py --help```
+
 ```
-python get_telemetry.py -c "JCSAT-14 Hosted Webcast.mp4" -d "JCSAT-14.json" -T 1250 -r false
+usage: get_telemetry.py [-h] [-c CAPTURE_PATH] [-d DESTINATION_PATH]
+                        [-T LAUNCH_TIME] [-o]
+
+Create graphs for SpaceX's launch videos.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CAPTURE_PATH, --capture CAPTURE_PATH
+                        Path (url or local) of the desired video
+  -d DESTINATION_PATH, --destination DESTINATION_PATH
+                        Path to the file that will contain the output
+  -T LAUNCH_TIME, --time LAUNCH_TIME
+                        Time from launch of the video to the time of the
+                        launch (in seconds). If not given and not live, the
+                        capture is set to the launch. If live, the capture
+                        isn't be affected
+  -o                    If given results will be printed to stdout
 ```
+
+
+Examples of use
+----------------------
+
+```
+python get_telemetry.py -c "JCSAT-14 Hosted Webcast.mp4" -d "JCSAT-14.json"
+```
+* This command will write the data from the JCSAT-14 webcast local file to the file "JCSAT-14.json".
+
+```
+python get_telemetry.py -c https://www.youtube.com/watch?v=L0bMeDj76ig -d "JCSAT-14.json"
+```
+* This command will write the data from the JCSAT-14 webcast's YouTube video to the file "JCSAT-14.json".
+
+
+### WARNING: The program WILL override the output file. Be careful when you
+
