@@ -177,5 +177,5 @@ python get_telemetry.py -c https://www.youtube.com/watch?v=L0bMeDj76ig -d "JCSAT
 * This command will write the data from the JCSAT-14 webcast's YouTube video to the file "JCSAT-14.json".
 
 
-### WARNING: The program WILL override the output file. Be careful when you run it.
+### WARNING: The program WILL OVERRIDE the output file. Be careful when you run it.
 
