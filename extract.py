@@ -24,6 +24,16 @@ rects = {
 current_dir = None
 
 
+def rtnd(number, n):
+    """
+    Round number to a max of n digits after the decimal point
+    :param number: Given number
+    :param n: Requested number of digits after the decimal points
+    :return: number with a max of n digits after the decimal point
+    """
+    return int(number * 10 ** n) / 10 ** n
+
+
 def skip_from_launch(cap, time):
     """
     Move the capture to T+time (time can be negative) and returns the frame index.
@@ -60,6 +70,15 @@ def remove_duplicates(lst):
 
 
     return lst
+
+
+def is_live(cap):
+    """
+    Returns True if the capture is live and False otherwise
+    :param cap: An OpenCV capture
+    :return: True if the capture is live and False otherwise
+    """
+    return int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) < 0
 
 
 def digit_list_to_number(digit_list):
@@ -220,8 +239,7 @@ def time_to_seconds(time):
     """
     seconds = time % 100
     minutes = int(time / 100) % 100
-    hours = int(time / 1000)
-
+    hours = int(time / 10000)
     return seconds + 60*minutes + 60*60*hours
 
 
@@ -359,7 +377,7 @@ def calc_velocity(frame):
 
     velocity = velocity_to_ms(velocity, crop(frame, rects['unit']), unit_template, thresh_dict[res][1])
 
-    return velocity
+    return rtnd(velocity, 3)
 
 
 def calc_altitude(frame):
@@ -381,10 +399,15 @@ def calc_altitude(frame):
     lst = remove_duplicates(lst)
     lst.sort(key=lambda x: x[1])
 
-    return decimal_point_conversion(lst, altitude)
+    return rtnd(decimal_point_conversion(lst, altitude), 3)
 
 
 def extract_telemetry(frame):
+    """
+    Calculate rocket telemetry from the launch
+    :param frame: A frame
+    :return: A tuple: (Time, Velocity, Altitude)
+    """
     time, velocity, altitude = calc_time(frame), calc_velocity(frame), calc_altitude(frame)
 
     if time is not None and velocity is not None and altitude is not None:
