@@ -88,24 +88,33 @@ This is a script that outputs the time, velocity and altitude values of the Inma
 import extract
 import cv2
 
+# Get OpenCV capture of the video
 cap = extract.get_capture('https://www.youtube.com/watch?v=ynMYE64IEKs', '1080p')
 
+# Exit if cannot get capture
 if cap is None:
     exit(1)
 
+# Move capture to launch. If live this line does nothing.
 extract.skip_to_launch(cap)
 
-while cap.isOpened():
-    _, frame = cap.read()
-    
-    if frame is None:
-        break
+# Read the first frame
+_, frame = cap.read()
 
+# While the video hasn't finished
+while frame is not None:
+    # Calculate the time, velocity and alitutde values from the frame
+    # If can't calculate values, returns (None, None, None)
     time, velocity, altitude = extract.extract_telemetry(frame)
 
+    # If values are valid, print them
     if time is not None:
         print(time, velocity, altitude)
+        
+    # Read the next frame
+    _, frame = cap.read()
 ```
+This script can be downloaded from [here](https://github.com/shahar603/SpaceX/blob/master/example.py)
 
 
 - **I Highly recommend using 1080p, 720p is supported but is pretty dull. From my tests, 1080p is correct 98% of the time while 720p is less than 60%**
