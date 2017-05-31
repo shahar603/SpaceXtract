@@ -1,6 +1,6 @@
 # SpaceX
 Extraction and analysis of telemetry from SpaceX webcasts.
-Run this program using Python 3 (I tested it on Python 3.5.1 32bit version). You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
+This module is build for Python 3 (I tested it on Python 3.5.1 32 bit version on Windows 10). You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
 
 
 Installing the required modules
@@ -16,15 +16,16 @@ pip install streamlink
 You will need [FFMpeg](https://ffmpeg.org/) to be installed and be in ```PATH```
 
 
-extract.py
+[extract.py](#extract.py)
 =========
-extract.py is a Python module that allows anyone with a little knowledge of OpenCV to be able to analyse data from SpaceX webcast, Live, after launch or Offline.
+[extract.py](https://github.com/shahar603/SpaceX/blob/master/extract.py) is a Python module that allows anyone with a little knowledge of OpenCV to be able to write a program that captures data form SpaceX's webcasts. Live or not, using a local video file or just a link to YouTube.
 
 
 
 Importing the module
 --------------------
-Put the extract.py and the Templates folder in the same directpory as your script.
+Put the extract.py script and the Templates folder in the same directpory as your script.
+
 To import it to your script, add this line:
 ```
 import extract.py
@@ -36,7 +37,7 @@ To get the module, download [extract.py](https://github.com/shahar603/SpaceX/blo
 Documentation
 --------------------
 The module contains quite a lot of functions, but only a few are made for the user.
-Here are details about the useful functions for the user from help(extract).
+Here are details about the useful functions for the user from the documentation.
 
 ```
 calc_altitude(frame)
@@ -77,13 +78,24 @@ get_capture(youtube_url, res)
   :param youtube_url: A url of the video
   :param res: The resolution of the video.
   :return: An OpenCV capture of the video.
+  
+rtnd(number, n)
+    Round number to a max of n digits after the decimal point
+    :param number: Given number
+    :param n: Requested number of digits after the decimal points
+    :return: number with a max of n digits after the decimal point
+
+is_live(cap):
+    Returns True if the capture is live and False otherwise
+    :param cap: An OpenCV capture
+    :return: True if the capture is live and False otherwise
 ```
 
 
 Example of use
 --------------------
 This is a script that outputs the time, velocity and altitude values of the Inmarsat 5 F4 launch
-```
+```python
 import extract
 import cv2
 
@@ -114,7 +126,8 @@ while frame is not None:
     _, frame = cap.read()
 ```
 This script can be downloaded from [here](https://github.com/shahar603/SpaceX/blob/master/example.py)
-
+If you just want a program that does the job you can download the program [here](https://github.com/shahar603/SpaceX/blob/master/get_telemetry.py). It
+extracts the data, check it's valid and write it to a JSON file. Its documentation can be found [here]
 
 - **I Highly recommend using 1080p, 720p is supported but is pretty dull. From my tests, 1080p is correct 98% of the time while 720p is less than 60%**
 
@@ -131,10 +144,9 @@ Plans for the future
 * Moving some settings to a configuration files instread of being hard coded
 * (Maybe?) Support for other space streams (for example Blue Origin's)
 
-**Feedback is very welcome**
+### Feedback is very welcome
 
-
-get_telemetry.py
+[get_telemetry.py](#get_telemetry.py)
 =====================
 This script extract the telemetry data from SpaceX's webcast.
 
