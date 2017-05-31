@@ -97,6 +97,9 @@ extract.skip_to_launch(cap)
 
 while cap.isOpened():
     _, frame = cap.read()
+    
+    if frame is None:
+        break
 
     time, velocity, altitude = extract.extract_telemetry(frame)
 
