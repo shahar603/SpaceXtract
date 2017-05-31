@@ -16,7 +16,7 @@ pip install streamlink
 You will need [FFMpeg](https://ffmpeg.org/) to be installed and be in ```PATH```
 
 
-[extract.py](#extract.py)
+extract.py
 =========
 [extract.py](https://github.com/shahar603/SpaceX/blob/master/extract.py) is a Python module that allows anyone with a little knowledge of OpenCV to be able to write a program that captures data form SpaceX's webcasts. Live or not, using a local video file or just a link to YouTube.
 
@@ -146,7 +146,7 @@ Plans for the future
 
 ### Feedback is very welcome
 
-[get_telemetry.py](#get_telemetry.py)
+get_telemetry.py
 =====================
 This script extract the telemetry data from SpaceX's webcast.
 
