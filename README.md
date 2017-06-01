@@ -126,7 +126,7 @@ while frame is not None:
     _, frame = cap.read()
 ```
 This script can be downloaded from [here](https://github.com/shahar603/SpaceX/blob/master/example.py).
-If you just want a program that does the job without having to program it. You can download it form [here](https://github.com/shahar603/SpaceX/blob/master/get_telemetry.py). It
+If you just want a program that does the job without having to program it, you can download it form [here](https://github.com/shahar603/SpaceX/blob/master/get_telemetry.py). It
 extracts the data, check it's valid and write it to a JSON file. Explanations about its usage can be found below in the section titled "get_telemetry.py".
 
 - **I Highly recommend using 1080p, 720p is supported but is pretty dull. From my tests, 1080p is correct 98% of the time while 720p is less than 60%**
