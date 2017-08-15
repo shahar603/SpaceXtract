@@ -1,6 +1,6 @@
 # SpaceX
 Extraction and analysis of telemetry from SpaceX webcasts.
-This module is build for Python 3 (I tested it on Python 3.5.1 32 bit version on Windows 10). You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
+This module is built for Python 3 (I tested it on Python 3.5.1 32 bit version on Windows 10). You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
 
 
 Installing the required modules
@@ -13,7 +13,7 @@ pip install opencv-python
 pip install livestreamer
 pip install streamlink
 ```
-You will need [FFMpeg](https://ffmpeg.org/) to be installed and be in ```PATH```
+You will need [FFMpeg](https://ffmpeg.org/) to be installed and to be in ```PATH```
 
 
 extract.py
