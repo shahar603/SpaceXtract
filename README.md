@@ -1,6 +1,6 @@
 # SpaceX
 Extraction and analysis of telemetry from SpaceX webcasts.
-This module is build for Python 3 (I tested it on Python 3.5.1 32 bit version on Windows 10). You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
+This module is built for Python 3 (I tested it on Python 3.5.1 32 bit version on Windows 10). You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
 
 
 Installing the required modules
@@ -13,18 +13,18 @@ pip install opencv-python
 pip install livestreamer
 pip install streamlink
 ```
-You will need [FFMpeg](https://ffmpeg.org/) to be installed and be in ```PATH```
+You will need [FFMpeg](https://ffmpeg.org/) to be installed and to be in ```PATH```
 
 
 extract.py
 =========
-[extract.py](https://github.com/shahar603/SpaceX/blob/master/extract.py) is a Python module that allows anyone with a little knowledge of OpenCV to be able to write a program that captures data form SpaceX's webcasts. Live or not, using a local video file or just a link to YouTube.
+[extract.py](https://github.com/shahar603/SpaceX/blob/master/extract.py) is a Python module that allows anyone with a little knowledge of OpenCV to be able to write a program that captures data from SpaceX's webcasts. Live or not, using a local video file or just a link to YouTube.
 
 
 
 Importing the module
 --------------------
-Put the extract.py script and the Templates folder in the same directpory as your script.
+Put the extract.py script and the Templates folder in the same directory as your script.
 
 To import it to your script, add this line:
 ```
