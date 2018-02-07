@@ -10,7 +10,6 @@ All the required modules can be installed using pip in the following manner:
 ```
 pip install numpy
 pip install opencv-python
-pip install livestreamer
 pip install streamlink
 ```
 You will need [FFMpeg](https://ffmpeg.org/) to be installed and to be in ```PATH```
@@ -28,7 +27,7 @@ Put the extract.py script and the Templates folder in the same directory as your
 
 To import it to your script, add this line:
 ```
-import extract.py
+import extract
 ```
 
 Currently, the extract module cannot be installed with any tool (To my very limited knowledge).
