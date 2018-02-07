@@ -1,4 +1,4 @@
-# SpaceX
+# SpaceXtract
 Extraction and analysis of telemetry from SpaceX webcasts.
 This module is built for Python 3 (I tested it on Python 3.5.1 32 bit version on Windows 10). You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
 
