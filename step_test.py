@@ -37,6 +37,22 @@ def gravity(altitude):
     return 4*10**14/(6.375*10**6 + altitude)**2
 
 
+
+def refine_graph(x, y):
+    new_x = [x[0]]
+    new_y = [y[0]]
+
+
+    for i in range(1, len(x)):
+        if y[i] != new_y[-1]:
+            new_x.append(x[i])
+            new_y.append(y[i])
+
+
+    return new_x, new_y
+
+
+
 def refine_altitude(time, altitude, blur=True):
     new_time = [time[0]]
     new_altitude = [altitude[0]]
@@ -52,6 +68,10 @@ def refine_altitude(time, altitude, blur=True):
         elif new_altitude[-1] > altitude[i] and altitude[i] != altitude[i-1]:
             new_altitude.append(altitude[i-1])
             new_time.append(time[i-1])
+
+    if new_time[-1] != time[-1]:
+        new_time.append(time[-1])
+        new_altitude.append(altitude[-1])
 
 
     for i in range(len(new_altitude)):
@@ -95,16 +115,20 @@ def find_MECO(acceleration):
     return np.where(acceleration < 5)[0][0]
 
 
-def find_altitude_graph(time, altitude):
+def find_altitude_graph(time, altitude, blur=False, interp=False):
     altitude = np.multiply(1000, altitude)
-    temp_time, temp_altitude = refine_altitude(time, altitude, blur=False)
+    temp_time, temp_altitude = refine_altitude(time, altitude, blur=blur)
+
     f = interp1d(temp_time, temp_altitude, kind=3)
 
     global altitude_time, ALTITUDE_INTERVAL
 
     t = np.arange(temp_time[0], temp_time[-1], ALTITUDE_INTERVAL)
 
-    return np.interp(altitude_time, t, f(t))
+    if interp:
+        return np.interp(altitude_time, t, f(t))
+
+    return np.interp(altitude_time, temp_time, temp_altitude)
 
 
 def pythagoras(hypotenuse, leg):
@@ -118,7 +142,7 @@ def final_altitude(velocity, altitude):
 
 
 
-def find_angle_graph(velocity, vertical_velocity):
+def find_angle_graph(velocity, vertical_velocity, interp=False):
     angle = []
 
     for i in range(len(velocity)):
@@ -128,7 +152,17 @@ def find_angle_graph(velocity, vertical_velocity):
             ratio = max(-1, min(vertical_velocity[i] / velocity[i], 1))
             angle.append(asin(ratio))
 
+    angle = savgol_filter(angle, 5, 1)
+
+    if interp:
+        angle = savgol_filter(angle, 11, 1)
+        return ss.medfilt(angle, kernel_size=7)
+
     return angle
+
+
+
+
 
 
 def find_downrange_graph(time, horizontal_velocity, d0=0, dx=1):
@@ -155,6 +189,32 @@ def find_flip_point(y_axis, y_der, thresh = 1, dx = 10, start_index = 0):
                 return i
 
     return None
+
+
+
+
+def smooth_altitude_with_velocity(altitude):
+    new_altitude = []
+
+    velocity_altitude = find_downrange_graph(altitude_time, velocity, d0=altitude[0])
+    velocity_altitude_rev = find_downrange_graph(altitude_time, velocity[::-1], d0=altitude[-1])
+
+    for i in range(len(altitude_time)):
+        if velocity_altitude[i] - altitude[i] < 0 or velocity_altitude[i] < 1000:
+            new_altitude.append(velocity_altitude[i])
+            vertical_velocity[i] = velocity[i]
+
+        elif (velocity_altitude_rev[-(i + 1)] - altitude[i] < 0 and fabs(altitude[i]) < 10000) or fabs(altitude[i]) < 1000:
+            new_altitude.append(altitude[i])
+            # new_altitude.append(velocity_altitude[-1] - velocity_altitude[i])
+            vertical_velocity[i] = np.sign(vertical_velocity[i - 1]) * velocity[i]
+        else:
+            new_altitude.append(altitude[i])
+
+    return new_altitude
+
+
+
 
 
 def find_gap(data):
@@ -205,6 +265,9 @@ def get_atmos_data(altitude):
 
 def get_q(velocity, altitude):
     return 0.5*get_atmos_data(1000*altitude)[-1]*velocity**2
+
+
+
 
 
 
@@ -301,46 +364,39 @@ if end_index is not None and end_index != -1 and False:
 start = data['time'][0]
 end = data['time'][end_index]
 
+if end_index is not None and end_index != -1:
+    data['time'] = data['time'][:end_index+1]
+    data['velocity'] = data['velocity'][:end_index+1]
+    data['altitude'] = data['altitude'][:end_index+1]
+
 flip = len(sys.argv) >= 4
+
+if data['altitude'][-1] - data['altitude'][0] < 50:
+    stage = 1
+else:
+    stage = 2
 
 # Set time interval for the data
 velocity_time = np.arange(start, end, VELOCITY_INTERVAL)
 altitude_time = np.arange(start, end, ALTITUDE_INTERVAL)
 
 # Smooth altitude and velocity data
-altitude = find_altitude_graph(data['time'], data['altitude'])
+altitude = find_altitude_graph(data['time'], data['altitude'], interp=False)
 altitude = np.maximum(0, altitude)
 
-velocity = np.interp(altitude_time, data['time'], data['velocity'])
 
-velocity_altitude = find_downrange_graph(data['time'], data['velocity'])
-velocity_altitude = np.interp(altitude_time, data['time'], velocity_altitude)
+velocity = np.interp(altitude_time, *refine_graph(data['time'], data['velocity']))
 
-
-
-
-new_altitude = []
-
-
-for i in range(len(altitude_time)):
-    if altitude[i] < 3000 and velocity_altitude[i] < 4000:
-        new_altitude.append(velocity_altitude[i])
-    elif fabs(altitude[i]) < 1000:
-        new_altitude.append(velocity_altitude[-1] - velocity_altitude[i])
-    else:
-        new_altitude.append(altitude[i])
-
-altitude = new_altitude
 
 # Find vertical velocity
 vertical_velocity = derivative(altitude_time, altitude, 3)
-vertical_velocity = np.minimum(velocity, vertical_velocity)
+vertical_velocity = [np.sign(vv)*min(fabs(vv), vt) for vv, vt in zip(vertical_velocity, velocity)]
 
-#med_horizontal_velocity = ss.medfilt(horizontal_velocity, kernel_size=7)
-#wie_horizontal_velocity = ss.wiener(np.array(med_horizontal_velocity))
-#sav = savgol_filter(wie_horizontal_velocity, 5, 1)
 
-vv = vertical_velocity
+altitude = smooth_altitude_with_velocity(altitude)
+
+angle = find_angle_graph(velocity, vertical_velocity, interp=(stage == 2))
+
 
 med_vertical_velocity = ss.medfilt(vertical_velocity, kernel_size=7)
 wie_vertical_velocity = ss.wiener(np.array(med_vertical_velocity))
@@ -348,25 +404,32 @@ sav = savgol_filter(wie_vertical_velocity, 5, 1)
 vertical_velocity = sav
 
 
-angle = find_angle_graph(velocity, vertical_velocity)
 
 acceleration = derivative(altitude_time, velocity, 1)
+
 med_acceleration = ss.medfilt(acceleration, kernel_size=7)
 wie_acceleration = ss.wiener(np.array(med_acceleration))
 acceleration = np.add(wie_acceleration, np.multiply(list(map(gravity, altitude)), np.sin(angle)))
 acceleration = savgol_filter(acceleration, 3, 1)
 
+
 FLIP_TIME = find_flip_point2(altitude_time, velocity, vertical_velocity, acceleration)
 
-horizontal_velocity = pythagoras(velocity, vv)
+horizontal_velocity = pythagoras(velocity, vertical_velocity)
+
+
+horizontal_velocity_org = horizontal_velocity
+
 
 if FLIP_TIME is not None:
     flip_direction(altitude_time, horizontal_velocity, FLIP_TIME)
 
 
-med_horizontal_velocity = ss.medfilt(horizontal_velocity, kernel_size=7)
+med_horizontal_velocity = ss.medfilt(horizontal_velocity, kernel_size=15)
 wie_horizontal_velocity = ss.wiener(np.array(med_horizontal_velocity))
-horizontal_velocity = savgol_filter(wie_horizontal_velocity, 5, 1)
+sav = savgol_filter(wie_horizontal_velocity, 15, 3)
+horizontal_velocity = np.minimum(velocity, sav)
+
 
 downrange_distance = find_downrange_graph(altitude_time, horizontal_velocity)
 
@@ -393,7 +456,9 @@ out_string = ''
 
 velocity_time = np.subtract(velocity_time, data['time'][0])
 
-for i in range(len(altitude_time)):
+index = np.where(np.abs(acceleration) > 1)
+
+for i in range(min(len(altitude_time)-10, index[0][-1]+10)):
     data_dict = OrderedDict([
         ('time', float('{:.3f}'.format(altitude_time[i]))),
         ('velocity', float('{:.3f}'.format(velocity[i]))),
