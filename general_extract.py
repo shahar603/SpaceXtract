@@ -53,7 +53,7 @@ class BaseExtract:
         for key in self.image_dict:
             # A list of black and white versions of the templates
             img_lst = [
-                       self.prepare_frame(cv2.imread(path), [0, 1, 0, 1], thresh=225)
+                       self.prepare_frame(cv2.imread(path), [0, 1, 0, 1])
                        for path in self.image_dict[key][1]
                        ]
 
@@ -322,6 +322,39 @@ class BaseExtract:
 
 
 
+    def get_template_distance(self, pos_list):
+        return [pos_list[i+1] - pos_list[i] for i in range(len(pos_list)-1)]
+
+
+    def decimal_point_conversion(self, digit_pos_list):
+        """
+        Change the altitude value according to the position of the decimal point.
+        :param digit_pos_list: a list of the digits with their position.
+        :param altitude: Value of altitude
+        :return: The altitude after decimal digit conversion.
+        """
+
+        #return digit_pos_list[-1][1] - digit_pos_list[-2][1] >\
+        #       (digit_pos_list[-2][1] - digit_pos_list[-3][1]) * 1.3
+
+        distances = self.get_template_distance(digit_pos_list)
+        return distances[-2] > distances[-1] * 1.3
+
+
+
+    def get_template_distance(self, pos_list):
+        return [pos_list[i+1] - pos_list[i] for i in range(len(pos_list)-1)]
+
+
+    def decimal_point_conversion(self, digit_pos_list):
+        """
+        :param digit_pos_list: a list of the digits with their position.
+        :return:
+        """
+        distances = self.get_template_distance(digit_pos_list)
+        return distances[-2] * 1.3 < distances[-1]
+
+
 
     def image_to_number(self, image, templates, threshold, lengths):
         """
@@ -332,7 +365,7 @@ class BaseExtract:
         :param templates: Templates of the digits in the field.
         :param threshold: Minimum threshold to detect the digits.
         :param lengths: Expected length of the field. (Number of digits).
-        :return: The number in the image.
+        :return: Gap, The number in the image.
         """
 
         # Make sure the digits were extracted properly.
@@ -341,17 +374,16 @@ class BaseExtract:
         # Remove duplicate values.
         number_list = self.remove_duplicates(self.remove_duplicates(number_list))
 
-
         if len(number_list) not in lengths:
-            return None
-
+            return False, None
 
         # Sort the digits of the velocity and altitude values by position on the frame.
         number_list.sort(key=lambda x: x[1])
 
+        gap = self.decimal_point_conversion([x[1] for x in number_list])
         number = self.digit_list_to_number(number_list)
 
-        return number
+        return gap, number
 
 
 
@@ -362,14 +394,12 @@ class BaseExtract:
 
         :param frame: A frame
         :param key: The name(a key in 'image_dict') of the field to extract from 'frame'
-        :return: The number in the frame
+        :return: Gap, The number in the frame
         """
         roi = self.prepare_frame(frame, self.image_dict[key][0])
-        cv2.imshow(key, roi)
-        cv2.waitKey(1)
-        number = self.image_to_number(roi, self.image_dict[key][1], self.image_dict[key][2], self.image_dict[key][3])
+        gap, number = self.image_to_number(roi, self.image_dict[key][1], self.image_dict[key][2], self.image_dict[key][3])
 
-        return number
+        return gap, number
 
 
 
@@ -430,6 +460,7 @@ class RelativeExtract(BaseExtract):
         return self.image_dict is not None
 
 
+
     def search_anchor(self, frame):
         """
         Search anchor in 'frame' and set its location (self.anchor_location) accordingly
@@ -460,6 +491,7 @@ class RelativeExtract(BaseExtract):
         self.anchor_location = list(anchor_ratio + crop_ratio)
 
         return True
+
 
 
     def relative_to_abs(self, points):
