@@ -1,164 +1,51 @@
 # SpaceXtract
-Extraction and analysis of telemetry from SpaceX webcasts.
-This module is built for Python 3 (I tested it on Python 3.5.1 32 bit version on Windows 10). You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
+Extraction and analysis of telemetry from SpaceX's webcasts.
+This module is built for Python 3. You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
+
+
+
+
+## Note: Previous versions of this software is available on [Old Extraction Scripts](). It may not be compatible with newer visualizations and analysis tools
+available here.
+ 
 
 
 Installing the required modules
------------------------------
+==========================
+
+
 
 All the required modules can be installed using pip in the following manner:
+
+```
+pip install -r requirements.txt
+```
+
+Or manualy by installing the individul modules:
+
 ```
 pip install numpy
 pip install opencv-python
 pip install streamlink
+pip install matplotlib
 ```
+
 You will need [FFMpeg](https://ffmpeg.org/) to be installed and to be in ```PATH```
 
 
-extract.py
+Usage
 =========
-[extract.py](https://github.com/shahar603/SpaceX/blob/master/extract.py) is a Python module that allows anyone with a little knowledge of OpenCV to be able to write a program that captures data from SpaceX's webcasts. Live or not, using a local video file or just a link to YouTube.
+
+To capture telemetry from SpaceX's webcasts clone this repository and run ```python get_telemetry_spacex.py``` with the webcast (YouTube link) or path to file.
 
 
-
-Importing the module
---------------------
-Put the extract.py script and the Templates folder in the same directory as your script.
-
-To import it to your script, add this line:
-```
-import extract
-```
-
-Currently, the extract module cannot be installed with any tool (To my very limited knowledge).
-To get the module, download [extract.py](https://github.com/shahar603/SpaceX/blob/master/extract.py) and the [Templates](https://github.com/shahar603/SpaceX/tree/master/Templates) directory from this repository. In the future I plan to make it pip installable.
-
-Documentation
---------------------
-The module contains quite a lot of functions, but only a few are made for the user.
-Here are details about the useful functions for the user from the documentation.
+Here's the output of the ```--help``` option:
 
 ```
-calc_altitude(frame)
-  Get the altitude in the frame.
-  :param frame: Frame from the launch.
-  :return: The altitude in the frame.
+usage: get_telemetry_spacex.py [-h] [-c CAPTURE_PATH] [-d DESTINATION_PATH]
+                               [-T LAUNCH_TIME] [-o] [-f]
 
-calc_time(frame)
-  Get the time in the frame.
-  param frame: Frame from the launch.
-  return: The time in the frame.
-
-calc_velocity(frame)
-  Get the velocity in the frame.
-  :param frame: Frame from the launch.
-  :return: The velocity in the frame.
-        
-skip_to_launch(cap) 
-  Move cap to the first frame at T+00:00:00
-  :param cap: An OpenCV capture of the launch.
-  :return: the index of first frame at T+00:00:00
-  
-skip_from_launch(cap, time)
-  Move the capture to T+time (time can be negative) and returns the frame index.
-  :param cap: OpenCV capture
-  :param time: delta time from launch to skip to
-  :return: index of requested frame
-  
-extract_telemetry(frame)
-  Get time, velocity and alitutde values in frame
-  :param frame: Frame from the launch.
-  :return: tuple of time, velocity and alitutde (In this order)
-  
-#### WARNING For res='1080p' the function takes between 10 seconds to 5 minutes. In addition to that it might fail (Return a None)
-or raise an exception, if it does, try to run it again ####
-get_capture(youtube_url, res)
-  Get an OpenCV capture of a YouTube video.
-  :param youtube_url: A url of the video
-  :param res: The resolution of the video.
-  :return: An OpenCV capture of the video.
-  
-rtnd(number, n)
-    Round number to a max of n digits after the decimal point
-    :param number: Given number
-    :param n: Requested number of digits after the decimal points
-    :return: number with a max of n digits after the decimal point
-
-is_live(cap):
-    Returns True if the capture is live and False otherwise
-    :param cap: An OpenCV capture
-    :return: True if the capture is live and False otherwise
-```
-
-
-Example of use
---------------------
-This is a script that outputs the time, velocity and altitude values of the Inmarsat 5 F4 launch
-```python
-import extract
-import cv2
-
-# Get OpenCV capture of the video
-cap = extract.get_capture('https://www.youtube.com/watch?v=ynMYE64IEKs', '1080p')
-
-# Exit if cannot get capture
-if cap is None:
-    exit(1)
-
-# Move capture to launch. If live this line does nothing.
-extract.skip_to_launch(cap)
-
-# Read the first frame
-_, frame = cap.read()
-
-# While the video hasn't finished
-while frame is not None:
-    # Calculate the time, velocity and alitutde values from the frame
-    # If can't calculate values, returns (None, None, None)
-    time, velocity, altitude = extract.extract_telemetry(frame)
-
-    # If values are valid, print them
-    if time is not None:
-        print(time, velocity, altitude)
-        
-    # Read the next frame
-    _, frame = cap.read()
-```
-This script can be downloaded from [here](https://github.com/shahar603/SpaceX/blob/master/example.py).
-If you just want a program that does the job without having to program it, you can download it form [here](https://github.com/shahar603/SpaceX/blob/master/get_telemetry.py). It
-extracts the data, check it's valid and write it to a JSON file. Explanations about its usage can be found below in the section titled "get_telemetry.py".
-
-- **I Highly recommend using 1080p, 720p is supported but is pretty dull. From my tests, 1080p is correct 98% of the time while 720p is less than 60%**
-
-- **The final Python package might not be compadible with older versions of this module**
-
-
-
-
-Plans for the future
---------------------
-* Make the module a Python package
-* Better names and documentation (New names for functions, variables, tables and more). I'm open for suggestions.
-* Better support for 720p video
-* Moving some settings to a configuration files instread of being hard coded
-* (Maybe?) Support for other space streams (for example Blue Origin's)
-
-### Feedback is very welcome
-
-get_telemetry.py
-=====================
-This script extract the telemetry data from SpaceX's webcast.
-This scripts uses the [extract.py](https://github.com/shahar603/SpaceX/blob/master/extract.py) module.
-
-Command line arguments
--------------------
-Output of ```python get_telemetry.py --help```
-
-```
-usage: get_telemetry.py [-h] [-c CAPTURE_PATH] [-d DESTINATION_PATH]
-                        [-T LAUNCH_TIME] [-o]
-
-Create graphs for SpaceX's launch videos.
+Extract telemetry for SpaceX's launch videos.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -172,22 +59,133 @@ optional arguments:
                         capture is set to the launch. If live, the capture
                         isn't be affected
   -o                    If given results will be printed to stdout
+  -f                    Force override of output file
 ```
 
 
-Examples of use
-----------------------
 
+
+Extraction of telemetry from other sources
+==============
+
+```get_telemetry_spacex.py``` uses a python script called **[general_extract.py]()**.
+
+[general_extract.py]() is a script that performes fast OCR by searching and parsing only the data the user needs.
+To do that it uses JSON configuration files (their format is specified [below]()).
+
+
+general_extract.py contains two classes, ```BaseExtract``` and ```RelativeExtract```.
+
+
+```RelativeExtract``` is a subclass of ```BaseExtract```, the main difference between the two is that BaseExtract performes
+OCR on a fixed region of interest on screen. In contrast, RelativeExtract tracks the region of interest even when it moves and changes.
+
+
+
+
+Configuration files
+------------------
+
+The configuration file is a JSON file which contains a dictionary (keys - string, value - a list of size 4) that tell BaseExtract and it's subclasses where to perform
+OCR, what characters to search, how clear are the characters and how many characters to expect to find.
+
+The format of the file is the following:
+
+```javascript
+{
+    "field_1": [
+        [top, bottom, left, right],
+        
+        ["path_to_template_1.png", "path_to_template_2.png", ...],
+        
+        threshold,
+        
+        [expected_length_1, expected_length_2, ...]
+    ],
+    
+    "field_2" : [
+        ...
+    ],
+    
+    ...
+    
+}
 ```
-python get_telemetry.py -c "JCSAT-14 Hosted Webcast.mp4" -d "JCSAT-14.json"
+
+
+* "field_1" - The name of the field to search.
+
+* [top, bottom, left, right] - A list that specify the area to perform OCR. top, bottom, left and right
+are in ratio to screen size.
+
+For example: The list [0.1, 0.9, 0.4, 0.6] on a 1920x1080 image captures a rectangle with dimentions:
+
+(Rectangle_Width, Rectangle_Height) = (Screen_Width * (right - left), Screen_Height * (bottom - top)) = (1920*(0.6-0.4), 1080*(0.9-0.1)) = (384, 864)
+
+The location of the rectangle is specific to the Extractor class used and is specified [below]().
+
+
+* ["path_to_template_1.png", "path_to_template_2.png", ...] - A list of pathes to templates (images) to look for in the image.
+The images can be colored, but they are converted to grayscale and only prominent features in the image (like edges) are used to detect characters.
+
+
+* threshold - Minimum confidence required to detect a character.
+
+
+* [expected_length_1, expected_length_2, ...] - A list of optional lengths of the output. 
+
+
+
+
+Rectangle Location
+-----------------
+
+
+## BaseExtractor
+
+The (top, left) corner of the rectangle is the same as the (top, left) value specified in the configuration file.
+
+## RelativeExtractor
+
+RelativeExtractor uses an *anchor*. A template whos location is used as a reference for the other fields.
+
+If the anchor top left corner is (anchor_top, anchor_left), then the (top, left) corner of the rectangle RelativeExtract performes OCR in is (anchor_top+top, anchor_left+left).
+
+
+The anchor is specified in the configuration file as follows:
+
+```javascript
+    "anchor": [
+        null,
+        [
+            "path_to_the_anchor.png"
+        ],
+        threshold,
+        []
+    ] 
 ```
-* This command will write the data from the JCSAT-14 webcast local file to the file "JCSAT-14.json".
 
+
+
+Usage
+-----------
+
+To use BaseExtract and RelativeExtract first import general_extract.py
+
+```python
+import general_extract
 ```
-python get_telemetry.py -c https://www.youtube.com/watch?v=L0bMeDj76ig -d "JCSAT-14.json"
+
+Then create a BaseExtract instance.
+
+```python
+session = general_extract.BaseExtract(configuration_file_content)
 ```
-* This command will write the data from the JCSAT-14 webcast's YouTube video to the file "JCSAT-14.json".
 
+For a given OpenCV ```frame```, extract ```'my_field'``` using ```extract_number```:
 
-### WARNING: The program WILL OVERRIDE the output file. Be careful when you run it.
+```python
+my_field = session.extract_number(frame, 'my_field')
+```
 
+```'my_field'``` is a number that contains the indecies of the templates as defined in ```configuration_file_content['my_field'][1]``` (Path to template list).
