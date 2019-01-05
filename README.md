@@ -5,6 +5,8 @@ This module is built for Python 3. You'll need [OpenCV](http://opencv.org/), [Nu
 
 
 
+## Warning: README is work in progress...
+
 ## Note: Previous versions of this software is available on [Old Extraction Scripts](). It may not be compatible with newer visualizations and analysis tools
 available here.
  
