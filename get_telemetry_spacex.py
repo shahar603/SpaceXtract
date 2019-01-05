@@ -159,7 +159,7 @@ def get_data(cap, file, t0, out, name):
 def set_args():
     # Parse command line arguments.
     parser = argparse.ArgumentParser(
-        description="Create graphs for SpaceX's launch videos.")
+        description="Extract telemetry for SpaceX's launch videos.")
     parser.add_argument('-c', '--capture', action='store', dest='capture_path',
                         help='Path (url or local) of the desired video')
     parser.add_argument('-d', '--destination', action='store', dest='destination_path',
