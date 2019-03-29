@@ -1,18 +1,26 @@
-import general_extract
-import extract_video
+from SpaceXtract import general_extract
+from SpaceXtract import extract_video
+from SpaceXtract.util import Util, rtnd, to_float
 import json
 from math import fabs
 from collections import OrderedDict
 import argparse
 import os.path
-from util import Util, rtnd, to_float
 
 import cv2
 
 
 
+CONFIG_FILE_PATH = 'ConfigFiles/spacex/spacex.json'
 
+
+KMH = 3.6
+DECIMAL_CONVERSION = 10
 DROPPED_FRAME_THRESH = 100
+PRECISION = 3
+ANCHOR_SEARCH_START_TIME_FRACTION = 0.7
+ANCHOR_SEARCH_END_TIME_FRACTION = 1
+LAUNCH_VELOCITY = 0
 
 
 
@@ -24,11 +32,16 @@ def check_data(prev_velocity, prev_time, cur_velocity, cur_time, prev_alt, cur_a
            (fabs(cur_alt - prev_alt) < 8 or cur_time - prev_time > 10)
 
 
+def check_stage_switch(cur_stage, prev_stage):
+    return cur_stage != prev_stage and (cur_stage is not None and cur_time > 60)
+           
+           
+           
 
 def data_to_json(time, velocity, altitude):
     return json.dumps(OrderedDict(
-        [('time', rtnd(time, 3)),
-         ('velocity', rtnd(velocity, 3)),
+        [('time', rtnd(time, PRECISION)),
+         ('velocity', rtnd(velocity, PRECISION)),
          ('altitude', altitude)]
     ))
 
@@ -38,7 +51,8 @@ def write_to_file(file, string):
 
 
 
-
+def show_frame(frame):
+    cv2.imshow('frame', cv2.resize(frame, (0, 0), fx=0.5, fy=0.5))
 
 
 
@@ -52,20 +66,22 @@ def get_data(cap, file, t0, out, name):
     prev_altitude = 0
     prev_time = 0
     start = False
-
     dropped_frames = 0
-    con_dropped_frames = 0
-    prev_dropped_frame = 0
+    frame_index = 1
+    prev_stage = None
+    
+    
 
     time_file = open(name + '.meta', 'w')
 
-    with open('spacex.json', 'r') as spacex_dict_file:
+    with open(CONFIG_FILE_PATH, 'r') as spacex_dict_file:
         spacex_dict = json.load(spacex_dict_file)
 
-    session = general_extract.RelativeExtract(spacex_dict, anchor_range=[0, 0.3, 0.75, 1])
-
+    session = general_extract.RelativeExtract(spacex_dict, anchor_range=spacex_dict['anchor'][0])
     util = Util(session)
-    if util.find_anchor(cap, start=0.7, end=1):
+    
+    
+    if util.find_anchor(cap, start=ANCHOR_SEARCH_START_TIME_FRACTION, end=ANCHOR_SEARCH_END_TIME_FRACTION):
         util.skip_from_launch(cap, 'sign', t0)
 
     _, frame = cap.read()
@@ -74,7 +90,7 @@ def get_data(cap, file, t0, out, name):
     dec, a0 = session.extract_number(frame, 'altitude')
 
     if dec:
-        a0/=10
+        a0 /= DECIMAL_CONVERSION
 
 
     if t0 is not None:
@@ -83,9 +99,9 @@ def get_data(cap, file, t0, out, name):
         prev_altitude = a0
         cur_time = rtnd(t0, 3)
 
-    i = 1
+    
 
-    prev_stage = None
+    
 
 
 
@@ -94,29 +110,26 @@ def get_data(cap, file, t0, out, name):
         dec, altitude = session.extract_number(frame, 'altitude')
 
         if dec and altitude is not None:
-            altitude /= 10
+            altitude /= DECIMAL_CONVERSION
 
-        cv2.imshow('frame', cv2.resize(frame, (0, 0), fx=0.5, fy=0.5))
-
+        show_frame(frame)    
+            
         if cv2.waitKey(1) & 0xff == ord('q'):
             break
 
         cur_stage = session.get_template_index(frame, 'stage') + 1
 
-        #if velocity is not None and altitude is not None:
-        #    print(cur_time-prev_time, velocity-prev_vel, altitude-prev_altitude)
-
         if velocity is not None and altitude is not None and \
-                (check_data(prev_vel, prev_time, velocity/3.6, cur_time, prev_altitude, altitude)
-                 or cur_stage != prev_stage and (cur_stage is not None and cur_time > 60)):
+                (check_data(prev_vel, prev_time, velocity/KMH, cur_time, prev_altitude, altitude)
+                 or check_stage_switch(cur_stage, prev_stage)):
 
-            velocity /= 3.6
+            velocity /= KMH
 
             if cur_stage is not None and cur_stage != prev_stage:
                 prev_stage = cur_stage
 
                 time_file.write(json.dumps(OrderedDict([
-                    ('time', rtnd(cur_time, 3)),
+                    ('time', rtnd(cur_time, PRECISION)),
                     ('stage', cur_stage)
                 ])) + '\n')
                 time_file.flush()
@@ -133,24 +146,22 @@ def get_data(cap, file, t0, out, name):
             prev_altitude = altitude
             prev_time = cur_time
 
-            if velocity > 0:
+            if velocity > LAUNCH_VELOCITY:
                 start = True
         else:
             dropped_frames += 1
 
-            if dropped_frames % 10 == 0:
-                print('Frame number {} was dropped ({}) which is {:.2f}% of the total frames'.format(i, dropped_frames,
-                                                                                                     100 * dropped_frames / i))
+            if dropped_frames % DROPPED_FRAME_THRESH == 0:
+                print('Frame number {} was dropped ({}) which is {:.2f}% of the total frames'.format(frame_index,
+                    dropped_frames,
+                    100 * dropped_frames / frame_index))
 
         _, frame = cap.read()
-
-        if frame is None:
-            break
 
         if start:
             cur_time += dt
 
-        i += 1
+        frame_index += 1
 
     cv2.destroyAllWindows()
     time_file.close()
