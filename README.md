@@ -70,11 +70,12 @@ optional arguments:
 Extraction of telemetry from other sources
 ==============
 
-```get_telemetry_spacex.py``` uses a python script called **[general_extract.py]()**.
+```get_telemetry_spacex.py``` uses the [SpaceXtract] package.
 
-[general_extract.py]() is a script that performes fast OCR by searching and parsing only the data the user needs.
+[SpaceXtract] is a package that performes fast OCR by searching and parsing only the data the user needs.
 To do that it uses JSON configuration files (their format is specified [below]()).
 
+[SpaceXtract] uses the general_extract.py script to perform OCR.
 
 general_extract.py contains two classes, ```BaseExtract``` and ```RelativeExtract```.
 
