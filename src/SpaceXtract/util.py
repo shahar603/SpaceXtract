@@ -40,7 +40,7 @@ class Util():
         :param cap: OpenCV capture
         :param time: delta time from launch to skip to
         :return: index of requested frame
-        """
+        """        
         if thresh is None:
             thresh = self.extractor.image_dict[key][2]
 

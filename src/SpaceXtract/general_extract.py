@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from math import fabs
+import os
 
 
 
@@ -49,13 +50,14 @@ class BaseExtract:
         """
         Replace the paths in image_dict with the templates(images) they point to
         """
-
+        
+        # A list of black and white versions of the templates
         for key in self.image_dict:
-            # A list of black and white versions of the templates
-            img_lst = [
-                       self.prepare_frame(cv2.imread(path), [0, 1, 0, 1])
-                       for path in self.image_dict[key][1]
-                       ]
+            img_lst = []
+        
+            for path in self.image_dict[key][1]:
+                assert os.path.exists(path)
+                img_lst.append(self.prepare_frame(cv2.imread(path), [0, 1, 0, 1]))
 
             # Replace path list with template list
             self.image_dict[key][1] = img_lst
@@ -168,7 +170,7 @@ class BaseExtract:
             crop_range = [0, 1, 0, 1]
 
         frame = self.prepare_frame(frame, crop_range)
-
+                
         res = cv2.matchTemplate(frame, template, cv2.TM_CCOEFF_NORMED)
         loc = np.where(res >= thresh)
 
@@ -326,37 +328,20 @@ class BaseExtract:
         return [pos_list[i+1] - pos_list[i] for i in range(len(pos_list)-1)]
 
 
-    def decimal_point_conversion(self, digit_pos_list):
-        """
-        Change the altitude value according to the position of the decimal point.
-        :param digit_pos_list: a list of the digits with their position.
-        :param altitude: Value of altitude
-        :return: The altitude after decimal digit conversion.
-        """
-
-        #return digit_pos_list[-1][1] - digit_pos_list[-2][1] >\
-        #       (digit_pos_list[-2][1] - digit_pos_list[-3][1]) * 1.3
-
-        distances = self.get_template_distance(digit_pos_list)
-        return distances[-2] > distances[-1] * 1.3
 
 
 
     def get_template_distance(self, pos_list):
         return [pos_list[i+1] - pos_list[i] for i in range(len(pos_list)-1)]
 
-
-    def decimal_point_conversion(self, digit_pos_list):
-        """
-        :param digit_pos_list: a list of the digits with their position.
-        :return:
-        """
-        distances = self.get_template_distance(digit_pos_list)
-        return distances[-2] * 1.3 < distances[-1]
+    
+    
+    def decimal_point_conversion(self, lst):
+        return False
+    
 
 
-
-    def image_to_number(self, image, templates, threshold, lengths):
+    def image_to_number(self, image, templates, threshold, lengths, decimal_func=None):
         """
         Returns the number in 'image'.
 
@@ -367,6 +352,9 @@ class BaseExtract:
         :param lengths: Expected length of the field. (Number of digits).
         :return: Gap, The number in the image.
         """
+        
+        if decimal_func is None:
+            decimal_func = self.decimal_point_conversion
 
         # Make sure the digits were extracted properly.
         number_list = self.image_to_digit_list(image, templates, threshold)
@@ -379,8 +367,8 @@ class BaseExtract:
 
         # Sort the digits of the velocity and altitude values by position on the frame.
         number_list.sort(key=lambda x: x[1])
-
-        gap = self.decimal_point_conversion([x[1] for x in number_list])
+        
+        gap = decimal_func([x[1] for x in number_list])
         number = self.digit_list_to_number(number_list)
 
         return gap, number
@@ -388,7 +376,7 @@ class BaseExtract:
 
 
 
-    def extract_number(self, frame, key):
+    def extract_number(self, frame, key, decimal_func=None):
         """
         Get the number of 'key' in 'frame'
 
@@ -397,7 +385,7 @@ class BaseExtract:
         :return: Gap, The number in the frame
         """
         roi = self.prepare_frame(frame, self.image_dict[key][0])
-        gap, number = self.image_to_number(roi, self.image_dict[key][1], self.image_dict[key][2], self.image_dict[key][3])
+        gap, number = self.image_to_number(roi, self.image_dict[key][1], self.image_dict[key][2], self.image_dict[key][3], decimal_func)
 
         return gap, number
 
@@ -531,7 +519,7 @@ class RelativeExtract(BaseExtract):
 
 
 
-    def extract_number(self, frame, key):
+    def extract_number(self, frame, key, decimal_func=None):
         """
         Get the number of 'key' in 'frame'
 
@@ -541,5 +529,5 @@ class RelativeExtract(BaseExtract):
         """
         if not self.prepare_image_dict(frame):
             return None
-
-        return super(RelativeExtract, self).extract_number(frame, key)
+        
+        return super(RelativeExtract, self).extract_number(frame, key, decimal_func)
