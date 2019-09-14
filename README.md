@@ -9,8 +9,7 @@ This module is built for Python 3. You'll need [OpenCV](http://opencv.org/), [Nu
 
 
 
-## Note: Previous versions of this software are available on [Old Extraction Scripts](https://github.com/shahar603/SpaceXtract/tree/88f255da4841f4b4015474b3e74bf8e7de1eb64e/Old%20Extraction%20Scripts). It may not be compatible with newer visualizations and analysis tools
-available here.
+### Note: Previous versions of this software are available on [Old Extraction Scripts](https://github.com/shahar603/SpaceXtract/tree/88f255da4841f4b4015474b3e74bf8e7de1eb64e/Old%20Extraction%20Scripts). It may not be compatible with newer visualizations and analysis tools
  
 
 
