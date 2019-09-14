@@ -39,7 +39,7 @@ You will need [FFMpeg](https://ffmpeg.org/) to be installed and to be in ```PATH
 Usage
 =========
 
-To capture telemetry from SpaceX's webcasts clone this repository and run ```python get_telemetry_spacex.py``` with the webcast (YouTube link) or path to file.
+To capture telemetry from SpaceX's webcasts clone this repository and run ```python get_telemetry_spacex.py``` with the webcast (video file).
 
 
 Here's the output of the ```--help``` option:
