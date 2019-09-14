@@ -3,7 +3,7 @@
 ![SpaceXtract gif](https://github.com/shahar603/SpaceXtract/blob/master/docs/SpaceXtract.gif)
 
 
-Extraction and analysis of telemetry from SpaceX's webcasts.
+Extraction and analysis of telemetry from launch provders' webcasts (like SpaceX and RocketLab).
 This module is built for Python 3. You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
 
 
