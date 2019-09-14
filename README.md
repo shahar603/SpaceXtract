@@ -9,8 +9,6 @@ This module is built for Python 3. You'll need [OpenCV](http://opencv.org/), [Nu
 
 
 
-## Warning: README is work in progress...
-
 ## Note: Previous versions of this software are available on [Old Extraction Scripts](https://github.com/shahar603/SpaceXtract/tree/88f255da4841f4b4015474b3e74bf8e7de1eb64e/Old%20Extraction%20Scripts). It may not be compatible with newer visualizations and analysis tools
 available here.
  
@@ -74,12 +72,12 @@ optional arguments:
 Extraction of telemetry from other sources
 ==============
 
-```get_telemetry_spacex.py``` uses the [SpaceXtract] package.
+```get_telemetry_spacex.py``` uses the [SpaceXtract](https://github.com/shahar603/SpaceXtract/tree/master/src/SpaceXtract) package.
 
-[SpaceXtract] is a package that performes fast OCR by searching and parsing only the data the user needs.
+[SpaceXtract](https://github.com/shahar603/SpaceXtract/tree/master/src/SpaceXtract) is a package that performes fast OCR by searching and parsing only the data the user needs.
 To do that it uses JSON configuration files (their format is specified [below]()).
 
-[SpaceXtract] uses the general_extract.py script to perform OCR.
+[SpaceXtract](https://github.com/shahar603/SpaceXtract/tree/master/src/SpaceXtract) uses the general_extract.py script to perform OCR.
 
 general_extract.py contains two classes, ```BaseExtract``` and ```RelativeExtract```.
 
