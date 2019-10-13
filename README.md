@@ -4,12 +4,8 @@
 
 
 Extraction and analysis of telemetry from launch provders' webcasts (like SpaceX and RocketLab).
-This module is built for Python 3. You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/)
+This module is built for Python 3. You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/). Video sources can be local files or HLS compliant streams.
 
-
-
-
-### Note: Previous versions of this software are available on [Old Extraction Scripts](https://github.com/shahar603/SpaceXtract/tree/88f255da4841f4b4015474b3e74bf8e7de1eb64e/Old%20Extraction%20Scripts). It may not be compatible with newer visualizations and analysis tools
  
 
 
