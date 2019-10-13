@@ -88,11 +88,22 @@ class Util():
         :return: The altitude after decimal digit conversion.
         """
 
-        #return digit_pos_list[-1][1] - digit_pos_list[-2][1] >\
-        #       (digit_pos_list[-2][1] - digit_pos_list[-3][1]) * 1.3
-
         distances = self.get_template_distance(digit_pos_list)
         return distances[-2] > distances[-1] * 1.3
+        
+    def play_until_anchor_found(self, cap, session, interval=5):
+        _, frame = cap.read()
+        
+        while not session.prepare_image_dict(frame):
+            for i in range(interval*30):
+                _, frame = cap.read()
+                
+                if cv2.waitKey(1) & 0xff == ord('q'):
+                    break
+            
+            cv2.imshow('frame', frame)
+           
+                
 
 
 

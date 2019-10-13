@@ -88,8 +88,12 @@ def get_data(cap, file, t0, out, name):
     util = Util(session)
     
     
-    if util.find_anchor(cap, start=ANCHOR_SEARCH_START_TIME_FRACTION, end=ANCHOR_SEARCH_END_TIME_FRACTION):
-        util.skip_from_launch(cap, 'sign', t0)
+    if not live:
+        if util.find_anchor(cap, start=ANCHOR_SEARCH_START_TIME_FRACTION, end=ANCHOR_SEARCH_END_TIME_FRACTION):
+            util.skip_from_launch(cap, 'sign', t0)
+    else:
+        util.play_until_anchor_found(cap, session)
+
     
     _, frame = cap.read()
     _, t0 = session.extract_number(frame, 'time', decimal_point_conversion)
