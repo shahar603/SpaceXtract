@@ -32,10 +32,7 @@ def get_capture(cap_path):
     if youtube_url_validation(cap_path):
         return get_capture_from_url(cap_path, '1080p')
 
-    elif os.path.isfile(cap_path):
-        return cv2.VideoCapture(cap_path)
-
-    return None
+    return cv2.VideoCapture(cap_path)
 
 
 def is_live(cap):

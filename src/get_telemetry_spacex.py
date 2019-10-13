@@ -31,13 +31,9 @@ def check_data(prev_velocity, prev_time, cur_velocity, cur_time, prev_alt, cur_a
            fabs((cur_alt - prev_alt) / (cur_time - prev_time)) < 200 and \
            (fabs(cur_alt - prev_alt) < 8 or cur_time - prev_time > 10)
 
-
 def check_stage_switch(cur_time, cur_stage, prev_stage):
     return cur_stage != prev_stage and (cur_stage is not None and cur_time > 60)
            
-           
-           
-
 def data_to_json(time, velocity, altitude):
     return json.dumps(OrderedDict(
         [('time', rtnd(time, PRECISION)),
@@ -45,16 +41,11 @@ def data_to_json(time, velocity, altitude):
          ('altitude', altitude)]
     ))
 
-
 def write_to_file(file, string):
     file.write(string + '\n')
 
-
-
 def show_frame(frame):
     cv2.imshow('frame', cv2.resize(frame, (0, 0), fx=0.5, fy=0.5))
-
-
 
 def get_template_distance(pos_list):
     return [pos_list[i+1] - pos_list[i] for i in range(len(pos_list)-1)]
@@ -71,7 +62,6 @@ def decimal_point_conversion(digit_pos_list):
     
     if len(distances) < 2:
         return True
-        
     
     return 1.1*distances[-2] < distances[-1]
 
@@ -119,12 +109,6 @@ def get_data(cap, file, t0, out, name):
         prev_vel = v0/KMH
         prev_altitude = a0
         cur_time = rtnd(t0, 3)
-
-    
-
-    
-
-
 
     while frame is not None:
         _, velocity = session.extract_number(frame, 'velocity', decimal_point_conversion)
