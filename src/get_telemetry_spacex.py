@@ -32,7 +32,7 @@ def check_data(prev_velocity, prev_time, cur_velocity, cur_time, prev_alt, cur_a
            (fabs(cur_alt - prev_alt) < 8 or cur_time - prev_time > 10)
 
 
-def check_stage_switch(cur_stage, prev_stage):
+def check_stage_switch(cur_time, cur_stage, prev_stage):
     return cur_stage != prev_stage and (cur_stage is not None and cur_time > 60)
            
            
@@ -109,13 +109,14 @@ def get_data(cap, file, t0, out, name):
     _, v0 = session.extract_number(frame, 'velocity', decimal_point_conversion)
     dec, a0 = session.extract_number(frame, 'altitude', decimal_point_conversion)
 
+
     if dec:
         a0 /= DECIMAL_CONVERSION
-
+        
 
     if t0 is not None:
         prev_time = t0 - dt
-        prev_vel = v0
+        prev_vel = v0/KMH
         prev_altitude = a0
         cur_time = rtnd(t0, 3)
 
@@ -131,17 +132,17 @@ def get_data(cap, file, t0, out, name):
 
         if dec and altitude is not None:
             altitude /= DECIMAL_CONVERSION
-
+            
         show_frame(frame)    
             
         if cv2.waitKey(1) & 0xff == ord('q'):
             break
 
         cur_stage = session.get_template_index(frame, 'stage') + 1
-
+        
         if velocity is not None and altitude is not None and \
                 (check_data(prev_vel, prev_time, velocity/KMH, cur_time, prev_altitude, altitude)
-                 or check_stage_switch(cur_stage, prev_stage)):
+                 or check_stage_switch(cur_time, cur_stage, prev_stage)):
 
             velocity /= KMH
 

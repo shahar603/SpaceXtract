@@ -7,8 +7,8 @@
             0.0774999999999998
         ],
         [
-            "Templates/spacex/stage1.png",
-            "Templates/spacex/stage2.png"
+            "../Templates/spacex/stage1.png",
+            "../Templates/spacex/stage2.png"
         ],
         0.7,
         [
@@ -23,7 +23,7 @@
             0.08749999999999991
         ],
         [
-            "Templates/spacex/kmh.jpg"
+            "../Templates/spacex/kmh.jpg"
         ],
         0.85,
         [
@@ -33,7 +33,7 @@
     "anchor": [
         [0, 0.3, 0.75, 1],
         [
-            "Templates/spacex/anchor.png"
+            "../Templates/spacex/anchor.png"
         ],
         0.85,
         []
@@ -46,7 +46,7 @@
             0.021874999999999978
         ],
         [
-            "Templates/spacex/plus.jpg"
+            "../Templates/spacex/plus.jpg"
         ],
         0.7,
         [
@@ -61,16 +61,16 @@
             0.08177083333333335
         ],
         [
-            "Templates/spacex/0.jpg",
-            "Templates/spacex/1.jpg",
-            "Templates/spacex/2.jpg",
-            "Templates/spacex/3.jpg",
-            "Templates/spacex/4.jpg",
-            "Templates/spacex/5.jpg",
-            "Templates/spacex/6.jpg",
-            "Templates/spacex/7.jpg",
-            "Templates/spacex/8.jpg",
-            "Templates/spacex/9.jpg"
+            "../Templates/spacex/0.jpg",
+            "../Templates/spacex/1.jpg",
+            "../Templates/spacex/2.jpg",
+            "../Templates/spacex/3.jpg",
+            "../Templates/spacex/4.jpg",
+            "../Templates/spacex/5.jpg",
+            "../Templates/spacex/6.jpg",
+            "../Templates/spacex/7.jpg",
+            "../Templates/spacex/8.jpg",
+            "../Templates/spacex/9.jpg"
         ],
         0.75,
         [
@@ -85,16 +85,16 @@
             0.1802083333333333
         ],
         [
-            "Templates/spacex/0.jpg",
-            "Templates/spacex/1.jpg",
-            "Templates/spacex/2.jpg",
-            "Templates/spacex/3.jpg",
-            "Templates/spacex/4.jpg",
-            "Templates/spacex/5.jpg",
-            "Templates/spacex/6.jpg",
-            "Templates/spacex/7.jpg",
-            "Templates/spacex/8.jpg",
-            "Templates/spacex/9.jpg"
+            "../Templates/spacex/0.jpg",
+            "../Templates/spacex/1.jpg",
+            "../Templates/spacex/2.jpg",
+            "../Templates/spacex/3.jpg",
+            "../Templates/spacex/4.jpg",
+            "../Templates/spacex/5.jpg",
+            "../Templates/spacex/6.jpg",
+            "../Templates/spacex/7.jpg",
+            "../Templates/spacex/8.jpg",
+            "../Templates/spacex/9.jpg"
         ],
         0.75,
         [
@@ -110,16 +110,16 @@
             0.11822916666666661
         ],
         [
-            "Templates/spacex/0.jpg",
-            "Templates/spacex/1.jpg",
-            "Templates/spacex/2.jpg",
-            "Templates/spacex/3.jpg",
-            "Templates/spacex/4.jpg",
-            "Templates/spacex/5.jpg",
-            "Templates/spacex/6.jpg",
-            "Templates/spacex/7.jpg",
-            "Templates/spacex/8.jpg",
-            "Templates/spacex/9.jpg"
+            "../Templates/spacex/0.jpg",
+            "../Templates/spacex/1.jpg",
+            "../Templates/spacex/2.jpg",
+            "../Templates/spacex/3.jpg",
+            "../Templates/spacex/4.jpg",
+            "../Templates/spacex/5.jpg",
+            "../Templates/spacex/6.jpg",
+            "../Templates/spacex/7.jpg",
+            "../Templates/spacex/8.jpg",
+            "../Templates/spacex/9.jpg"
         ],
         0.75,
         [

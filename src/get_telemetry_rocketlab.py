@@ -102,7 +102,7 @@ def get_data(cap, file, t0, out, name):
 
     if t0 is not None:
         prev_time = t0 - dt
-        prev_vel = v0
+        prev_vel = v0 / KMH
         prev_altitude = a0
         cur_time = rtnd(t0, 3)
 
