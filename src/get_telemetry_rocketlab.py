@@ -65,7 +65,7 @@ def decimal_point_conversion(digit_pos_list):
     return True
 
 
-def get_data(cap, file, t0, out, name):
+def get_data(cap, file, t0, out, name, live):
     dt = 1 / cap.get(cv2.CAP_PROP_FPS)
 
     cur_time = 0
@@ -194,6 +194,8 @@ def set_args():
                         help='If given results will be printed to stdout')
     parser.add_argument('-f', action='store_true', dest='force',
                         help='Force override of output file')
+    parser.add_argument('-l', action='store_true', dest='live',
+                        help='Is the source live')
 
     args = parser.parse_args()
 
@@ -224,7 +226,7 @@ def main():
         print("Cannot access video in file. Please make sure the path to the file is valid")
         exit(3)
 
-    get_data(cap, file, to_float(args.launch_time), args.out, args.destination_path)
+    get_data(cap, file, to_float(args.launch_time), args.out, args.destination_path, args.live)
 
 
 if __name__ == '__main__':
