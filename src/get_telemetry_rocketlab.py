@@ -11,7 +11,7 @@ import cv2
 
 
 
-CONFIG_FILE_PATH = '../ConfigFiles/rocketlab/rocketlab.json'
+CONFIG_FILE_PATH = '../ConfigFiles/rocketlab/rocketlab_new.json'
 
 
 KMH = 3.6
@@ -65,7 +65,7 @@ def decimal_point_conversion(digit_pos_list):
     return True
 
 
-def get_data(cap, file, t0, out, name, live):
+def get_data(cap, file, t0, out, name, live, from_launch=True):
     dt = 1 / cap.get(cv2.CAP_PROP_FPS)
 
     cur_time = 0
@@ -89,13 +89,15 @@ def get_data(cap, file, t0, out, name, live):
     
     
     if not live:
-        if util.find_anchor(cap, start=ANCHOR_SEARCH_START_TIME_FRACTION, end=ANCHOR_SEARCH_END_TIME_FRACTION):
+        if from_launch and t0 is not None:
+            cap.set(cv2.CAP_PROP_POS_FRAMES, t0*cap.get(cv2.CAP_PROP_FPS))
+        elif util.find_anchor(cap, start=ANCHOR_SEARCH_START_TIME_FRACTION, end=ANCHOR_SEARCH_END_TIME_FRACTION):
             util.skip_from_launch(cap, 'sign', t0)
     else:
         util.play_until_anchor_found(cap, session)
-
     
     _, frame = cap.read()
+        
     _, t0 = session.extract_number(frame, 'time', decimal_point_conversion)
     _, v0 = session.extract_number(frame, 'velocity', decimal_point_conversion)
     dec, a0 = session.extract_number(frame, 'altitude', decimal_point_conversion)    
@@ -111,11 +113,6 @@ def get_data(cap, file, t0, out, name, live):
         cur_time = rtnd(t0, 3)
 
     
-
-    
-
-
-
     while frame is not None:
         _, velocity = session.extract_number(frame, 'velocity', decimal_point_conversion)
         dec, altitude = session.extract_number(frame, 'altitude', decimal_point_conversion)
@@ -196,6 +193,8 @@ def set_args():
                         help='Force override of output file')
     parser.add_argument('-l', action='store_true', dest='live',
                         help='Is the source live')
+    parser.add_argument('-s', action='store_true', dest='from_launch',
+                        help='Start from time')
 
     args = parser.parse_args()
 
@@ -226,7 +225,7 @@ def main():
         print("Cannot access video in file. Please make sure the path to the file is valid")
         exit(3)
 
-    get_data(cap, file, to_float(args.launch_time), args.out, args.destination_path, args.live)
+    get_data(cap, file, to_float(args.launch_time), args.out, args.destination_path, args.live, args.from_launch)
 
 
 if __name__ == '__main__':
