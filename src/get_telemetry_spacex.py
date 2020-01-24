@@ -63,7 +63,7 @@ def decimal_point_conversion(digit_pos_list):
     if len(distances) < 2:
         return True
     
-    return 1.1*distances[-2] < distances[-1]
+    return 1.2*distances[-2] < distances[-1]
 
 
 
