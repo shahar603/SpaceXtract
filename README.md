@@ -4,7 +4,7 @@
 
 
 Extraction and analysis of telemetry from launch provders' webcasts (like SpaceX and RocketLab).
-This module is built for Python 3. You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/). Video sources can be local files or HLS compliant streams.
+This module is built for Python 3. You'll need [OpenCV](http://opencv.org/), [NumPy](http://www.numpy.org/), [Streamlink](https://streamlink.github.io/) and [FFMpeg](https://ffmpeg.org/). Video sources are local files or HLS compliant streams.
 
  
 
