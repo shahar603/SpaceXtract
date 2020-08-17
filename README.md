@@ -56,7 +56,7 @@ optional arguments:
                         Time from launch of the video to the time of the
                         launch (in seconds). If not given and not live, the
                         capture is set to the launch. If live, the capture
-                        isn't be affected
+                        starts from the beginning of the stream
   -o                    If given results will be printed to stdout
   -f                    Force override of output file
 ```
