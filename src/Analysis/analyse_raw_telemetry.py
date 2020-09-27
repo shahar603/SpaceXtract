@@ -10,7 +10,6 @@ from math import fabs, pi, asin, sin, log, degrees, acos
 import trendline
 from scipy.interpolate import interp1d
 import sys
-import Telemetry.Orbit as orbit
 from collections import OrderedDict
 from skaero.atmosphere import coesa
 import math
@@ -288,78 +287,6 @@ end = data['time'][-1]
 
 
 end_index = find_gap(data)
-
-
-if end_index is not None and end_index != -1 and False:
-    start = data['time'][0]
-    end = data['time'][end_index]
-
-    altitude_time = np.arange(start, end, ALTITUDE_INTERVAL)
-    altitude = find_altitude_graph(data['time'][:end_index], data['altitude'][:end_index])
-
-    der = derivative(altitude_time, altitude, dx = 5)
-    crit = []
-
-    last_der = 0
-    i = 0
-    for t,a in zip(altitude_time, der):
-        if fabs(a) < 3 and i - last_der > 60:
-            crit.append(i)
-            last_der = i
-        i+=1
-
-
-    coast_start = crit[len(crit)//2]
-
-
-    # Set time interval for the data
-    velocity_time = np.arange(start, end, VELOCITY_INTERVAL)
-    altitude_time = np.arange(start, end, ALTITUDE_INTERVAL)
-
-    # Smooth altitude and velocity data
-    altitude = find_altitude_graph(data['time'], data['altitude'])
-    velocity = np.interp(altitude_time, data['time'], data['velocity'])
-
-    coast_start_time = altitude_time[coast_start]
-    coast_end_time = data['time'][end_index+1]
-
-
-    dict = {
-        'time': [],
-        'velocity': [],
-        'altitude': []
-    }
-
-
-    for i, t in enumerate(data['time']):
-        if data['time'][0] <= t <= coast_start_time:
-            dict['time'].append(t)
-            dict['velocity'].append(data['velocity'][i])
-            dict['altitude'].append(data['altitude'][i])
-        else:
-            break
-
-
-    new_data = orbit.calculate(
-        data['altitude'][i-1]*1000,
-        data['altitude'][end_index+1]*1000,
-        velocity[coast_start-1],
-        coast_start_time,
-        coast_end_time)
-
-
-    dict['time'] += new_data['time']
-    dict['velocity'] += new_data['velocity']
-    dict['altitude'] += new_data['altitude']
-
-    for i, t in enumerate(data['time']):
-        if coast_end_time < t <= data['time'][-1]:
-            dict['time'].append(t)
-            dict['velocity'].append(data['velocity'][i])
-            dict['altitude'].append(data['altitude'][i])
-
-    data = dict
-
 
 start = data['time'][0]
 end = data['time'][end_index]
