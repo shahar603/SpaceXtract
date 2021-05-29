@@ -1,3 +1,5 @@
+import sys
+
 from SpaceXtract import general_extract
 from SpaceXtract import extract_video
 from SpaceXtract.util import Util, rtnd, to_float
@@ -11,7 +13,7 @@ import cv2
 
 
 
-CONFIG_FILE_PATH = '../ConfigFiles/rocketlab/rocketlab_new.json'
+CONFIG_FILE_PATH = '../ConfigFiles/rocketlab/rocketlab_20plus.json'
 
 
 KMH = 3.6
@@ -22,7 +24,7 @@ ANCHOR_SEARCH_START_TIME_FRACTION = 0.7
 ANCHOR_SEARCH_END_TIME_FRACTION = 1
 LAUNCH_VELOCITY = 0
 
-
+SCALE = 0.5
 
 
 def check_data(prev_velocity, prev_time, cur_velocity, cur_time, prev_alt, cur_alt):
@@ -50,9 +52,36 @@ def write_to_file(file, string):
     file.write(string + '\n')
 
 
+def show_frame(frame, session, rocketlab_dict_frame : dict):
+    global counter
+    location= session.anchor_location
+    x_rel = int(location[2]* 1920)
+    y_rel = int(location[0]*1080)
+    p1_anchor = (x_rel,y_rel)
+    p2_anchor = (int(location[3]* 1920),int(location[1]*1080))
 
-def show_frame(frame):
-    cv2.imshow('frame', cv2.resize(frame, (0, 0), fx=0.5, fy=0.5))
+    time_location = session.ratio_to_pixel(session.relative_to_abs(rocketlab_dict_frame["sign"][0]),frame.shape)
+    p1_time = (int(time_location[2]),int(time_location[0]))
+    p2_time = (int(time_location[3]),int(time_location[1]))
+
+    alt_location = session.ratio_to_pixel(session.relative_to_abs(rocketlab_dict_frame["altitude"][0]),frame.shape)
+    p1_alt = (int(alt_location[2]), int(alt_location[0]))
+    p2_alt = (int(alt_location[3]), int(alt_location[1]))
+
+    speed_location = session.ratio_to_pixel(session.relative_to_abs(rocketlab_dict_frame["velocity"][0]),frame.shape)
+    p2_speed = (int(speed_location[2]), int(speed_location[0]))
+    p1_speed = (int(speed_location[3]), int(speed_location[1]))
+
+    t_location = session.ratio_to_pixel(session.relative_to_abs(rocketlab_dict_frame["time"][0]), frame.shape)
+    t2_speed = (int(t_location[2]), int(t_location[0]))
+    t1_speed = (int(t_location[3]), int(t_location[1]))
+
+    cv2.rectangle(frame,p1_time,p2_time,(255,0,0), 2)
+    cv2.rectangle(frame,p1_anchor,p2_anchor,(255,0,0), 2)
+    cv2.rectangle(frame,p1_alt,p2_alt,(255,0,0), 2)
+    cv2.rectangle(frame,p1_speed,p2_speed,(255,0,0), 2)
+    cv2.rectangle(frame,t1_speed,t2_speed,(255,0,0), 2)
+    cv2.imshow('frame', cv2.resize(frame, (0, 0), fx=SCALE, fy=SCALE))
 
 
 
@@ -82,9 +111,12 @@ def get_data(cap, file, t0, out, name, live, from_launch=True):
     time_file = open(name + '.meta', 'w')
 
     with open(CONFIG_FILE_PATH, 'r') as spacex_dict_file:
-        spacex_dict = json.load(spacex_dict_file)
+        s= spacex_dict_file.read()
+        rocketlab_dict = json.loads(s)
+        unchanged_dict= json.loads(s)
 
-    session = general_extract.RelativeExtract(spacex_dict, anchor_range=spacex_dict['anchor'][0])
+
+    session = general_extract.RelativeExtract(rocketlab_dict, anchor_range=rocketlab_dict['anchor'][0])
     util = Util(session)
     
     
@@ -105,7 +137,6 @@ def get_data(cap, file, t0, out, name, live, from_launch=True):
     if dec:
         a0 /= DECIMAL_CONVERSION
 
-
     if t0 is not None:
         prev_time = t0 - dt
         prev_vel = v0 / KMH
@@ -120,7 +151,7 @@ def get_data(cap, file, t0, out, name, live, from_launch=True):
         if dec and altitude is not None:
             altitude /= DECIMAL_CONVERSION
 
-        show_frame(frame)    
+        show_frame(frame,session,unchanged_dict)
             
         if cv2.waitKey(1) & 0xff == ord('q'):
             break
